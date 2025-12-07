@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sbux Dates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #00704A 0%, #1E3932 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .today-date {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            color: #00704A;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 16px 0;
+            font-size: 22px;
+        }
+
+        td:first-child {
+            color: #00704A;
+            font-weight: 600;
+            width: 40%;
+        }
+
+        td:last-child {
+            text-align: right;
+            color: #1E3932;
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        tr:hover {
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TODAY</h1>
+        <div class="today-date" id="todayDate"></div>
+        <table>
+            <tbody id="dateTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function formatDate(date, includeYear = true) {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const year = date.getFullYear();
+            return includeYear ? `${month}/${day}/${year}` : `${month}/${day}`;
+        }
+
+        function generateDateTable() {
+            const today = new Date();
+            const daysOffset = [2, 3, 5, 7, 12];
+            
+            // Display today's date
+            document.getElementById('todayDate').textContent = formatDate(today);
+            
+            // Generate table rows
+            const tableBody = document.getElementById('dateTable');
+            daysOffset.forEach(days => {
+                const futureDate = new Date(today);
+                futureDate.setDate(futureDate.getDate() + days);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${days} day${days > 1 ? 's' : ''}</td>
+                    <td>${formatDate(futureDate, false)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        generateDateTable();
+    </script>
+</body>
+</html>
