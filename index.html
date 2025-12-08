@@ -43,8 +43,17 @@
             font-size: 42px;
             font-weight: 700;
             color: #00704A;
-            margin-bottom: 40px;
+            margin-bottom: 40px; /* changed: increase spacing below date (was 10px) */
             letter-spacing: -0.5px;
+        }
+
+        /* Added: style for the time below the title */
+        .today-time {
+            text-align: center;
+            color: #000;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px; /* changed: small gap between time and date (was 40px) */
         }
 
         table {
@@ -86,6 +95,8 @@
 <body>
     <div class="container">
         <h1>TODAY</h1>
+        <!-- moved time element to be directly under the title -->
+        <div class="today-time" id="todayTime"></div>
         <div class="today-date" id="todayDate"></div>
         <table>
             <tbody id="dateTable"></tbody>
@@ -100,12 +111,36 @@
             return includeYear ? `${month}/${day}/${year}` : `${month}/${day}`;
         }
 
+        // Added: returns HH:MM (12-hour) with am/pm and leading zeros for minutes
+        function formatTime(date) {
+            const hours = date.getHours();
+            const hh12 = hours % 12 || 12;
+            const mm = String(date.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'pm' : 'am';
+            return `${hh12}:${mm} ${ampm}`;
+        }
+
+        // Added: update the time display
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('todayTime').textContent = formatTime(now);
+        }
+
         function generateDateTable() {
             const today = new Date();
             const daysOffset = [2, 3, 5, 7, 12];
             
             // Display today's date
             document.getElementById('todayDate').textContent = formatDate(today);
+
+            // Initialize time and schedule minute updates
+            updateTime();
+            // Schedule the first update exactly at the next minute boundary, then every 60s
+            const msUntilNextMinute = (60 - today.getSeconds()) * 1000 - today.getMilliseconds();
+            setTimeout(() => {
+                updateTime();
+                setInterval(updateTime, 60000);
+            }, msUntilNextMinute);
             
             // Generate table rows
             const tableBody = document.getElementById('dateTable');
